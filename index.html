@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="点阵字防OCR验证码，有效防止OCR识别，提高验证码的安全性。">
+    <meta name="keywords" content="验证码, 图像文字验证码, 防OCR验证码, 安全性">
+    <meta name="author" content="">
+    <title>图像文字验证码</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h3 class="title">图像文字验证码，由EndlessPixel Studio的system_mini成员开发</h3>
+        <hr>
+    </header>
+    <main>
+        <div class="container">
+            <div class="form-item">
+                <label>验证码（点击刷新）：</label>
+                <div class="captcha-box">
+                    <canvas id="captcha-canvas" width="140" height="50"></canvas>
+                    <input type="text" name="userCode" id="userCode" placeholder="输入4位验证码" maxlength="4" required>
+                </div>
+            </div>
+            <button id="submit-btn">验证</button>
+        </div>
+        <div class="modal" id="tip-modal">
+            <div class="modal-content">
+                <div id="modal-text"></div>
+                <div id="modal-uid" class="modal-uid"></div>
+                <button class="modal-btn" id="modal-close">确定</button>
+            </div>
+        </div>
+    </main>
+    <footer class="copyright-footer" aria-label="版权信息">
+        <p class="copyright-text">
+            &copy; 2024–2026 EndlessPixel Studio
+            <span class="copyright-author">BY system_mini</span>
+            | 项目地址：
+            <a href="https://github.com/EndlessPixel/captcha" target="_blank" rel="noopener noreferrer"
+                class="copyright-link" aria-label="前往GitHub查看captcha项目（新标签页）">
+                https://github.com/EndlessPixel/captcha
+            </a>
+            | 基于 <span class="license-tag">MIT协议</span> 开源
+        </p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
