@@ -1,4 +1,4 @@
-Dot Matrix CAPTCHA
+# Dot Matrix CAPTCHA
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
@@ -6,24 +6,18 @@ Dot Matrix CAPTCHA
 
 A lightweight, anti-OCR dot-matrix CAPTCHA system designed to prevent automated bot recognition through distorted text rendering. Developed by the system_mini member of EndlessPixel Studio.
 
-Overview
+## Overview
 
 This project implements a server-side CAPTCHA system that generates dot-matrix style verification codes with random distortions to resist OCR-based attacks. It provides both the image generation frontend and verification backend.
 
-Features
+## Features
+- Dot Matrix Characters: Uses a custom 5x3 dot matrix pattern for alphanumeric characters
+- Anti-OCR Protection: Random rotation, noise dots, and positional jitter
+- Server-Side Validation: Secure token-based verification system
+- Simple API: RESTful endpoints for verification and status checks
+- Lightweight: Minimal dependencies, easy to deploy
 
-• Dot Matrix Characters: Uses a custom 5x3 dot matrix pattern for alphanumeric characters
-
-• Anti-OCR Protection: Random rotation, noise dots, and positional jitter
-
-• Server-Side Validation: Secure token-based verification system
-
-• Simple API: RESTful endpoints for verification and status checks
-
-• Lightweight: Minimal dependencies, easy to deploy
-
-Installation
-
+## Installation
 1. Clone the repository:
 ```bash
 # use Git to clone the repository
@@ -33,31 +27,21 @@ gh repo clone EndlessPixel/captcha
 # change directory to the project folder
 cd captcha
 ```
-
 2. Start the server:
 ```bash
 # start the server
 node server.js
 ```
+> The server will run on port 3000 by default.
 
-
-The server will run on port 3000 by default.
-
-API Endpoints
-
+## API Endpoints
 1. CAPTCHA Verification
-
-• Endpoint: POST /verify
-
-• Content-Type: application/x-www-form-urlencoded
-
-• Parameters:
-
-  • userCode: User-input CAPTCHA code
-
-  • correctCode: Actual CAPTCHA code (sent from frontend)
-
-• Success Response:
+- Endpoint: POST /verify
+- Content-Type: application/x-www-form-urlencoded
+- Parameters:
+  - userCode: User-input CAPTCHA code
+  - correctCode: Actual CAPTCHA code (sent from frontend)
+- Success Response:
 ```json
 {
   "success": true,
@@ -65,8 +49,7 @@ API Endpoints
   "uid": "xxxx-xxxx-xxxx-xxxx-xxxx"
 }
 ```
-
-• Error Response:
+- Error Response:
 ```json
 {
   "success": false,
@@ -74,16 +57,16 @@ API Endpoints
 }
 ```
 
-
 2. Verification Status Check
+- **Endpoint**: GET /inquire?uid={verification_uid}
+- **Parameters**:
+  - uid: Verification UID received from /verify endpoint
 
-• Endpoint: GET /inquire?uid={verification_uid}
+- **Response**: Returns true if verified, false if not
 
-• Response: Returns true if verified, false if not
+## Integration Guide
 
-Integration Guide
-
-Frontend Integration
+### Frontend Integration
 
 1. Include the CAPTCHA canvas in your HTML:
 ```html
@@ -95,68 +78,48 @@ Frontend Integration
 
 2. Add the JavaScript and CSS files to your project.
 
-Backend Integration
-
+### Backend Integration
 1. For Form Validation:
-   • Store the generated CAPTCHA code in session/server-side
-
-   • Send both userCode and correctCode to /verify endpoint
-
-   • Use the returned UID for future verification status checks
-
+   - Store the generated CAPTCHA code in session/server-side
+   - Send both userCode and correctCode to /verify endpoint
+   - Use the returned UID for future verification status checks
 2. For API Protection:
-   • Require CAPTCHA verification before sensitive operations
+   - Require CAPTCHA verification before sensitive operations
+   - Use the /inquire endpoint to verify UID status
 
-   • Use the /inquire endpoint to verify UID status
+## Configuration
 
-Configuration
+### Modify server.js to change:
+- Server port (default: `3000`)
+- Verification token storage and expiration
+- CAPTCHA character set
 
-Modify server.js to change:
-• Server port (default: 3000)
+### Security Considerations
+- Server-side validation prevents client-side tampering
+- Verification tokens are randomly generated and stored
+- Implement rate limiting in production environments
 
-• Verification token storage and expiration
+### Browser Support
+- **Chrome**: `60+`
+- **Firefox**: `55+`
+- **Safari**: `11+`
+- **Edge**: `79+`
 
-• CAPTCHA character set
-
-Security Considerations
-
-• The CAPTCHA excludes easily confused characters (1, I, 0, O, etc.)
-
-• Server-side validation prevents client-side tampering
-
-• Verification tokens are randomly generated and stored
-
-• Implement rate limiting in production environments
-
-Browser Support
-
-• Chrome `60+`
-
-• Firefox `55+`
-
-• Safari `11+`
-
-• Edge `79+`
-
-Project Structure
-
+### Project Structure
 ```
-captcha/
-├── index.html    # Main HTML file
-├── server.js     # Node.js server
-├── public/       # Public assets
-│   ├── style.css # Stylesheet
-│   └── script.js # Frontend logic
-├── LICENSE       # MIT License
-└── README.md     # This file
+captcha/            # Dot Matrix CAPTCHA project folder
+├──── index.html    # Main HTML file
+├──── server.js     # Node.js server
+├─┬── public/       # Public assets
+│ ├── style.css     # Stylesheet
+│ └── script.js     # Frontend logic
+├──── LICENSE       # MIT License
+└──── README.md     # This file
 ```
 
-License
+### License
+**MIT License** `© 2024-2026 EndlessPixel Studio`
 
-MIT License `© 2024-2026 EndlessPixel Studio`
-
-Contact
-
-• Project URL: https://github.com/EndlessPixel/captcha
-
-• Developer: system_mini (EndlessPixel Studio)
+### Contact
+- Project URL: [https://github.com/EndlessPixel/captcha](https://github.com/EndlessPixel/captcha)
+- Developer: system_mini (EndlessPixel Studio)
