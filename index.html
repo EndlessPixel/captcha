@@ -17,21 +17,34 @@
         <hr>
     </header>
     <main>
-        <div class="container">
-            <div class="form-item">
+        <div class="form-container">
+            <from class="form">
                 <label>验证码（点击刷新）：</label>
                 <div class="captcha-box">
                     <canvas id="captcha-canvas" width="140" height="50"></canvas>
-                    <input type="text" name="userCode" id="userCode" placeholder="输入4位验证码" maxlength="4" required>
+                    <div class="input-container">
+                        <input class="input" type="text" name="userCode" id="userCode" placeholder="输入4位验证码"
+                            maxlength="4" required>
+                        <label class="label">请输入验证码</label>
+                        <div class="top-line"></div>
+                        <div class="under-line"></div>
+                    </div>
+
                 </div>
-            </div>
-            <button id="submit-btn">验证</button>
+                <label>验证码可能会加载失败，若失败请点击图片刷新或刷新页面重试。</label>
+                <button class="button" id="submit-btn">
+                    <span class="button-content">验证 </span>
+                </button>
+            </from>
         </div>
+
         <div class="modal" id="tip-modal">
             <div class="modal-content">
                 <div id="modal-text"></div>
                 <div id="modal-uid" class="modal-uid"></div>
-                <button class="modal-btn" id="modal-close">确定</button>
+                <button class="button" id="modal-close">
+                    <span class="button-content">确定 </span>
+                </button>
             </div>
         </div>
     </main>
