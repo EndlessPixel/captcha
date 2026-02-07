@@ -164,6 +164,7 @@ const server = http.createServer((req, res) => {
         const isVerified = verifyStore[uid] === true;
         res.end(JSON.stringify(isVerified));
     }
+        // 使用 http(s)://{ip/domain}(:{port})/inquire?uid={uid} 查询用户验证状态，可接入任何脚本网页或者机器人框架使用
 
     // 静态文件
     else {
