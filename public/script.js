@@ -8,7 +8,14 @@ window.onload = async function () {
     const modalUid = document.getElementById('modal-uid');
     const modalClose = document.getElementById('modal-close');
 
-    // ========== 新增：篡改猴检测核心函数 ==========
+    // 防止XSS攻击的文本转义函数
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ========== 插件检测核心函数 ==========
     function detectTampermonkey() {
         // 检测1：全局变量特征（Tampermonkey/Greasemonkey/Violentmonkey）
         const hasUserScriptVars = !!(
@@ -58,7 +65,7 @@ window.onload = async function () {
         return hasUserScriptVars || hasScriptDom || hasNavigatorTamper;
     }
 
-    // ========== 新增：插件检测处理逻辑 ==========
+    // ========== 插件检测处理逻辑 ==========
     function handleUserScriptDetection() {
         const isTampermonkeyInstalled = detectTampermonkey();
 
@@ -73,10 +80,10 @@ window.onload = async function () {
 
             // 显示强制提示弹窗
             showModal(
-                '检测到您的浏览器安装了Tampermonkey（篡改猴）/Greasemonkey等用户脚本插件！<br/>' +
-                '为确保验证的安全性，您需要：<br/>' +
-                '1. 卸载该插件 或<br/>' +
-                '2. 临时禁用该插件<br/>' +
+                '检测到您的浏览器安装了Tampermonkey（篡改猴）/Greasemonkey等用户脚本插件！\n' +
+                '为确保验证的安全性，您需要：\n' +
+                '1. 卸载该插件 或\n' +
+                '2. 临时禁用该插件\n' +
                 '操作完成后请刷新页面重试。',
                 false
             );
@@ -104,65 +111,7 @@ window.onload = async function () {
     canvas.ondragstart = () => false;
     canvas.oncopy = () => false;
 
-    // 点阵字体（不变）
-    const dotMatrixFont = {
-        '0': [[1, 1, 1], [1, 0, 1], [1, 0, 1], [1, 0, 1], [1, 1, 1]],
-        '2': [[1, 1, 1], [0, 0, 1], [1, 1, 1], [1, 0, 0], [1, 1, 1]],
-        '3': [[1, 1, 1], [0, 0, 1], [1, 1, 1], [0, 0, 1], [1, 1, 1]],
-        '4': [[1, 0, 1], [1, 0, 1], [1, 1, 1], [0, 0, 1], [0, 0, 1]],
-        '5': [[1, 1, 1], [1, 0, 0], [1, 1, 1], [0, 0, 1], [1, 1, 1]],
-        '6': [[1, 1, 1], [1, 0, 0], [1, 1, 1], [1, 0, 1], [1, 1, 1]],
-        '7': [[1, 1, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1]],
-        '8': [[1, 1, 1], [1, 0, 1], [1, 1, 1], [1, 0, 1], [1, 1, 1]],
-        '9': [[1, 1, 1], [1, 0, 1], [1, 1, 1], [0, 0, 1], [1, 1, 1]],
-        'A': [[1, 1, 1], [1, 0, 1], [1, 1, 1], [1, 0, 1], [1, 0, 1]],
-        'B': [[1, 1, 0], [1, 0, 1], [1, 1, 0], [1, 0, 1], [1, 1, 0]],
-        'C': [[1, 1, 1], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 1, 1]],
-        'D': [[1, 1, 0], [1, 0, 1], [1, 0, 1], [1, 0, 1], [1, 1, 0]],
-        'E': [[1, 1, 1], [1, 0, 0], [1, 1, 1], [1, 0, 0], [1, 1, 1]],
-        'F': [[1, 1, 1], [1, 0, 0], [1, 1, 1], [1, 0, 0], [1, 0, 0]],
-        'G': [[1, 1, 1], [1, 0, 0], [1, 0, 1], [1, 0, 1], [1, 1, 1]],
-        'H': [[1, 0, 1], [1, 0, 1], [1, 1, 1], [1, 0, 1], [1, 0, 1]],
-        'J': [[1, 1, 1], [0, 0, 1], [0, 0, 1], [0, 0, 1], [1, 1, 1]],
-        'K': [[1, 0, 1], [1, 0, 1], [1, 1, 0], [1, 0, 1], [1, 0, 1]],
-        'L': [[1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 1, 1]],
-        'M': [[1, 0, 1], [1, 1, 1], [1, 0, 1], [1, 0, 1], [1, 0, 1]],
-        'N': [[1, 0, 1], [1, 1, 1], [1, 1, 1], [1, 1, 1], [1, 0, 1]],
-        'P': [[1, 1, 1], [1, 0, 1], [1, 1, 1], [1, 0, 0], [1, 0, 0]],
-        'Q': [[1, 1, 1], [1, 0, 1], [1, 0, 1], [1, 1, 1], [0, 0, 1]],
-        'R': [[1, 1, 1], [1, 0, 1], [1, 1, 1], [1, 0, 1], [1, 0, 1]],
-        'S': [[1, 1, 1], [1, 0, 0], [1, 1, 1], [0, 0, 1], [1, 1, 1]],
-        'T': [[1, 1, 1], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]],
-        'U': [[1, 0, 1], [1, 0, 1], [1, 0, 1], [1, 0, 1], [1, 1, 1]],
-        'V': [[1, 0, 1], [1, 0, 1], [1, 0, 1], [0, 1, 0], [0, 1, 0]],
-        'W': [[1, 0, 1], [1, 0, 1], [1, 0, 1], [1, 1, 1], [1, 0, 1]],
-        'X': [[1, 0, 1], [1, 0, 1], [0, 1, 0], [1, 0, 1], [1, 0, 1]],
-        'Y': [[1, 0, 1], [1, 0, 1], [0, 1, 0], [0, 1, 0], [0, 1, 0]],
-        'Z': [[1, 1, 1], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 1, 1]]
-    };
-
-    // 绘制点阵字符（不变）
-    function drawDotMatrixChar(ctx, char, x, y, size, color) {
-        const matrix = dotMatrixFont[char];
-        const dotSize = size / 6;
-        for (let row = 0; row < matrix.length; row++) {
-            for (let col = 0; col < matrix[row].length; col++) {
-                if (matrix[row][col] === 1) {
-                    const offsetX = (Math.random() - 0.5) * 2;
-                    const offsetY = (Math.random() - 0.5) * 2;
-                    ctx.fillStyle = color;
-                    ctx.fillRect(
-                        x + col * dotSize + offsetX,
-                        y + row * dotSize + offsetY,
-                        dotSize - 1,
-                        dotSize - 1
-                    );
-                }
-            }
-        }
-    }
-
-    // 从后端获取验证码并绘制
+    // 从后端获取验证码并显示
     async function generateCaptcha() {
         // 先检测插件，检测到则直接返回
         if (!handleUserScriptDetection()) {
@@ -174,43 +123,36 @@ window.onload = async function () {
                 method: 'GET',
                 credentials: 'include' // 携带Cookie（sessionId）
             });
-            const result = await response.json();
-            if (!result.success) {
-                showModal(result.message || '验证码加载失败！', false);
+            
+            if (!response.ok) {
+                showModal('验证码加载失败！', false);
                 return;
             }
-
-            // 仅用于绘制的验证码字符（前端不再存储正确答案）
-            const captchaCode = result.captchaCode;
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-
-            // 清空画布
-            ctx.fillStyle = '#f8f8f8';
-            ctx.fillRect(0, 0, width, height);
-
-            // 绘制干扰点
-            for (let i = 0; i < 80; i++) {
-                ctx.fillStyle = `rgb(${Math.random() * 60 + 180},${Math.random() * 60 + 180},${Math.random() * 60 + 180})`;
-                ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
-            }
-
-            // 绘制验证码字符
-            for (let i = 0; i < 4; i++) {
-                const char = captchaCode[i];
-                const baseX = 20 + i * 25;
-                const baseY = 25;
-                const size = 24;
-                const rotate = (Math.random() - 0.5) * 20;
-                const color = `rgb(${Math.floor(Math.random() * 80 + 20)},${Math.floor(Math.random() * 80 + 20)},${Math.floor(Math.random() * 80 + 20)})`;
-
-                ctx.save();
-                ctx.translate(baseX + size / 2, baseY + size / 2);
-                ctx.rotate(rotate * Math.PI / 180);
-                drawDotMatrixChar(ctx, char, -size / 2, -size / 2, size, color);
-                ctx.restore();
-            }
+            
+            // 获取SVG内容
+            const captchaSVG = await response.text();
+            
+            // 创建临时img元素来显示SVG
+            const img = new Image();
+            img.onload = function() {
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                // 清空画布
+                ctx.fillStyle = '#f8f8f8';
+                ctx.fillRect(0, 0, width, height);
+                
+                // 绘制SVG验证码
+                ctx.drawImage(img, 0, 0, width, height);
+            };
+            
+            img.onerror = function() {
+                showModal('验证码加载出错，请稍后重试！', false);
+            };
+            
+            // 将SVG转换为data URL并设置为img的src
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(captchaSVG)));
 
             // 清空输入框
             userCodeInput.value = '';
@@ -220,12 +162,13 @@ window.onload = async function () {
         }
     }
 
-    // 显示弹窗（支持HTML内容）
+    // 显示弹窗（安全的文本显示）
     function showModal(text, isSuccess, uid = '') {
-        modalText.innerHTML = text; // 修改为innerHTML以支持换行
+        // 使用textContent防止XSS攻击
+        modalText.textContent = text;
         modalText.className = isSuccess ? 'modal-success' : 'modal-error';
         if (isSuccess && uid) {
-            modalUid.textContent = `验证通过，您的验证UID：${uid}`;
+            modalUid.textContent = `验证通过，您的验证UID：${escapeHtml(uid)}`;
             modalUid.style.display = 'block';
         } else {
             modalUid.style.display = 'none';
@@ -243,6 +186,12 @@ window.onload = async function () {
         const userCode = userCodeInput.value.trim().toUpperCase();
         if (!userCode) {
             showModal('请输入验证码！', false);
+            return;
+        }
+
+        // 验证输入格式
+        if (!/^[A-Z0-9]{4}$/.test(userCode)) {
+            showModal('验证码格式错误，请输入4位字母或数字！', false);
             return;
         }
 
@@ -287,6 +236,6 @@ window.onload = async function () {
     handleUserScriptDetection();
     await generateCaptcha();
 
-    // 新增：定时检测（防止用户在页面加载后启用插件）
-    setInterval(handleUserScriptDetection, 3000);
+    // 定时检测（防止用户在页面加载后启用插件）
+    setInterval(handleUserScriptDetection, 5000); // 改为5秒一次，减少性能影响
 };
