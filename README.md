@@ -35,13 +35,18 @@ node server.js
 > The server will run on port 3000 by default.
 
 ## API Endpoints
-1. CAPTCHA Verification
-- Endpoint: POST /verify
-- Content-Type: application/x-www-form-urlencoded
-- Parameters:
+
+### Standard Endpoints
+1. **Get CAPTCHA**
+- **Endpoint**: GET /get-captcha
+- **Response**: SVG format CAPTCHA image
+
+2. **CAPTCHA Verification**
+- **Endpoint**: POST /verify
+- **Content-Type**: application/x-www-form-urlencoded
+- **Parameters**:
   - userCode: User-input CAPTCHA code
-  - correctCode: Actual CAPTCHA code (sent from frontend)
-- Success Response:
+- **Success Response**:
 ```json
 {
   "success": true,
@@ -49,7 +54,7 @@ node server.js
   "uid": "xxxx-xxxx-xxxx-xxxx-xxxx"
 }
 ```
-- Error Response:
+- **Error Response**:
 ```json
 {
   "success": false,
@@ -57,35 +62,122 @@ node server.js
 }
 ```
 
-2. Verification Status Check
+3. **Verification Status Check**
 - **Endpoint**: GET /inquire?uid={verification_uid}
 - **Parameters**:
   - uid: Verification UID received from /verify endpoint
-
 - **Response**: Returns true if verified, false if not
+
+### API Version Endpoints
+1. **Get CAPTCHA (API)**
+- **Endpoint**: GET /api/captcha
+- **Response**: JSON format with token and base64-encoded CAPTCHA image
+```json
+{
+  "success": true,
+  "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "captcha": "data:image/svg+xml;base64,..."
+}
+```
+
+2. **CAPTCHA Verification (API)**
+- **Endpoint**: POST /api/verify
+- **Content-Type**: application/x-www-form-urlencoded
+- **Parameters**:
+  - userCode: User-input CAPTCHA code
+  - token: Token received from /api/captcha endpoint
+- **Success Response**:
+```json
+{
+  "success": true,
+  "message": "Verification successful",
+  "uid": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+```
+
+3. **Verification Status Check (API)**
+- **Endpoint**: GET /api/inquire?uid={verification_uid}
+- **Parameters**:
+  - uid: Verification UID received from /api/verify endpoint
+- **Response**:
+```json
+{
+  "success": true,
+  "verified": true
+}
+```
 
 ## Integration Guide
 
-### Frontend Integration
+### Method 1: Direct Web Interface
+Visit `http://localhost:3000` to use the web-based CAPTCHA system.
 
-1. Include the CAPTCHA canvas in your HTML:
+### Method 2: JavaScript SDK
+
+#### Basic Usage
 ```html
-<div class="captcha-box">
-  <canvas id="captcha-canvas" width="140" height="50"></canvas>
-  <input type="text" name="userCode" id="userCode" maxlength="4" required>
-</div>
+<!-- Add a div container in your page -->
+<div id="captcha-container"></div>
+
+<!-- Include the CAPTCHA SDK -->
+<script src="/captcha-sdk.js"></script>
 ```
 
-2. Add the JavaScript and CSS files to your project.
+#### Advanced Usage
+```javascript
+// Custom configuration
+window.initCaptcha({
+    containerId: 'custom-captcha', // Custom container ID
+    onSuccess: function(uid) {
+        console.log('Verification successful, UID:', uid);
+        // Handle successful verification
+    },
+    onError: function(message) {
+        console.log('Verification failed:', message);
+        // Handle verification failure
+    },
+    onExpire: function() {
+        console.log('CAPTCHA expired');
+        // Handle expired CAPTCHA
+    }
+});
+```
 
-### Backend Integration
-1. For Form Validation:
-   - Store the generated CAPTCHA code in session/server-side
-   - Send both userCode and correctCode to /verify endpoint
-   - Use the returned UID for future verification status checks
-2. For API Protection:
-   - Require CAPTCHA verification before sensitive operations
-   - Use the /inquire endpoint to verify UID status
+### Method 3: API Integration
+
+#### Get CAPTCHA
+```javascript
+const response = await fetch('/api/captcha', {
+    method: 'GET'
+});
+const result = await response.json();
+// Use result.token and result.captcha
+```
+
+#### Verify CAPTCHA
+```javascript
+const response = await fetch('/api/verify', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+        userCode: 'ABCD',
+        token: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    })
+});
+const result = await response.json();
+// Use result.uid for status checks
+```
+
+#### Check Verification Status
+```javascript
+const response = await fetch('/api/inquire?uid=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', {
+    method: 'GET'
+});
+const result = await response.json();
+// Check result.verified
+```
 
 ## Configuration
 
@@ -108,11 +200,15 @@ node server.js
 ### Project Structure
 ```
 captcha/            # Dot Matrix CAPTCHA project folder
+├─┬── docs/         # Documentation and examples
+│ ├── api.html      # API usage example
+│ └── sdk-demo.html # SDK usage example
 ├──── index.html    # Main HTML file
 ├──── server.js     # Node.js server
 ├─┬── public/       # Public assets
 │ ├── style.css     # Stylesheet
-│ └── script.js     # Frontend logic
+│ ├── script.js     # Frontend logic
+│ └── captcha-sdk.js # CAPTCHA SDK
 ├──── LICENSE       # MIT License
 └──── README.md     # This file
 ```
