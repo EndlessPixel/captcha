@@ -1,24 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="点阵字防OCR验证码，有效防止OCR识别，提高验证码的安全性。">
-    <meta name="keywords" content="验证码, 图像文字验证码, 防OCR验证码, 安全性">
-    <meta name="author" content="">
-    <title>图像文字验证码</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="challenge.css">
+    <title>人机验证</title>
 </head>
 
 <body>
-    <header>
-        <h3 class="title">图像文字验证码，由EndlessPixel Studio的system_mini成员开发</h3>
-        <hr>
-    </header>
+    <h1>xxx.xxx.com正在验证你是否为真人</h1>
+    <br>
+    <h2>请完成以下验证，以证明您不是机器人。</h2>
+    <!-- 1. success-msg 移出main，放在外面 -->
+    <h2 id="success-msg" style="display: none;">验证成功！正在等待xxx.xxx.com响应</h2>
     <main>
         <div class="form-container">
-            <from class="form">
+            <!-- 2. 修正from → form -->
+            <form class="form">
                 <label>验证码（点击刷新）：</label>
                 <div class="captcha-box">
                     <canvas id="captcha-canvas" width="160" height="70"></canvas>
@@ -29,13 +28,12 @@
                         <div class="top-line"></div>
                         <div class="under-line"></div>
                     </div>
-
                 </div>
                 <label>验证码可能会加载失败，若失败请点击图片刷新或刷新页面重试。</label>
-                <button class="button" id="submit-btn">
+                <button class="button" id="submit-btn" type="button">
                     <span class="button-content">验证 </span>
                 </button>
-            </from>
+            </form>
         </div>
 
         <div class="modal" id="tip-modal">
@@ -48,19 +46,6 @@
             </div>
         </div>
     </main>
-    <footer class="copyright-footer" aria-label="版权信息">
-        <p class="copyright-text">
-            &copy; 2024–2026 EndlessPixel Studio
-            <span class="copyright-author">BY system_mini</span>
-            | 项目地址：
-            <a href="https://github.com/EndlessPixel/captcha" target="_blank" rel="noopener noreferrer"
-                class="copyright-link" aria-label="前往GitHub查看captcha项目（新标签页）">
-                https://github.com/EndlessPixel/captcha
-            </a>
-            | 基于 <span class="license-tag">MIT协议</span> 开源
-        </p>
-    </footer>
-    <script src="script.js"></script>
+    <script src="challenge.js"></script>
 </body>
-
 </html>

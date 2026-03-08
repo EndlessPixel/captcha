@@ -1,0 +1,9 @@
+{
+    "name": "captcha",
+    "private": true,
+    "version": "1.5",
+    "type": "module",
+    "scripts": {
+        "app": "node server.js"
+    }
+}
